@@ -1,0 +1,33 @@
+{
+  "base_model": "sarvamai/sarvam-1",
+  "method": "LoRA",
+  "lora": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "bias": "none",
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    "modules_to_save": ["embed_tokens", "lm_head"]
+  },
+  "precision": "bf16",
+  "hardware": "NVIDIA A5000 24GB",
+  "prompt_tags": ["<S2S>", "<PHONEMES>", "</PHONEMES>", "<TEXT>"],
+  "checkpoint_selection": "best at step 15000; val loss rose at 15500; ran to 16000 to confirm overfitting, kept 15000",
+  "data": {
+    "source_rows": 200000,
+    "high_quality_candidates": 104299,
+    "train": 60000,
+    "val": 4000,
+    "test": 2000,
+    "train_noise_mix": "80% noisy / 20% clean",
+    "eval_noise": {"swap": 0.12, "drop": 0.03, "dup": 0.02},
+    "target_overlap": {"train_val": 0, "train_test": 0, "val_test": 0}
+  },
+  "results_corpus_level": {
+    "val_noisy": {"n": 4000, "exact_pct": 33.2, "cer_pct": 3.94, "wer_pct": 9.95},
+    "val_clean": {"n": 4000, "exact_pct": 58.1, "cer_pct": 1.49, "wer_pct": 4.76},
+    "test_noisy": {"n": 2000, "exact_pct": 31.0, "cer_pct": 3.91, "wer_pct": 9.94},
+    "test_clean": {"n": 2000, "exact_pct": 57.7, "cer_pct": 1.42, "wer_pct": 4.71}
+  },
+  "scope_note": "Noisy prompts use synthetic viseme noise (swap/drop/dup), a proxy for lip-reading errors, not real ASR output."
+}
